@@ -24,15 +24,11 @@ def telecharger_pdfs(url):
     # Chercher tous les liens
     liens = soup.find_all('a', href=True)
     # Filtrer les liens vers une autre page
-    page = [urljoin(url, lien['href']) for lien in liens if lien .get('href') and '.html' in lien['href'] .lower()and lien['href'].__contains__('Enseignement')]
+    page = [urljoin(url, lien['href']) for lien in liens if '.html' in lien['href'].lower()]
 
-    if len(page)>0:
-        print("Des pages ont été trouvées :")
-        print(len(page))
-
-    elif not page:
-        print("aucune page trouvée")
-    
+    if len(page)==0:
+        print("aucune page intriquée")
+        return
     
     # Filtrer les liens vers des PDF
     pdfs = [urljoin(url, lien['href']) for lien in liens if lien['href'].lower().endswith('.pdf')]

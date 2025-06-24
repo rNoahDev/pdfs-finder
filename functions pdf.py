@@ -3,13 +3,26 @@ from bs4 import BeautifulSoup
 import os
 from urllib.parse import urljoin
 
-def telecharger_pdfs(url):
+def pagefilter(liens) :
+    # Filtrer les liens vers une autre page
+    page = [urljoin(url, lien['href']) for lien in liens if lien .get('href') and '.html' in lien['href'] .lower()and lien['href'].__contains__('Enseignement')]
 
-    dossier = r'C:\Users\noahrozier\Documents\page_grp'
-    # Créer un dossier de destination si nécessaire
-    if not os.path.exists(dossier):
-        os.makedirs(dossier)
+    if len(page)>0:
+        print("Des pages ont été trouvées :")
+        print(len(page))
 
+    elif not page:
+        print("aucune page trouvée")
+        return
+
+def pdffilter(liens) :
+    # Filtrer les liens vers des PDF
+    pdfs = [urljoin(url, lien['href']) for lien in liens if lien['href'].lower().endswith('.pdf')]
+
+    if not pdfs:
+        print("Aucun fichier PDF trouvé.")
+        return
+def liensfinder(url):
     # Télécharger le contenu de la page
     try:
         reponse = requests.get(url)
@@ -23,25 +36,9 @@ def telecharger_pdfs(url):
 
     # Chercher tous les liens
     liens = soup.find_all('a', href=True)
-    # Filtrer les liens vers une autre page
-    page = [urljoin(url, lien['href']) for lien in liens if lien .get('href') and '.html' in lien['href'] .lower()and lien['href'].__contains__('Enseignement')]
-
-    if len(page)>0:
-        print("Des pages ont été trouvées :")
-        print(len(page))
-
-    elif not page:
-        print("aucune page trouvée")
-    
-    
-    # Filtrer les liens vers des PDF
-    pdfs = [urljoin(url, lien['href']) for lien in liens if lien['href'].lower().endswith('.pdf')]
-
-    if not pdfs:
-        print("Aucun fichier PDF trouvé.")
-        return
-
-    # Télécharger chaque PDF
+    return
+def pdfdownload(pdfs):
+ # Télécharger chaque PDF
     for pdf_url in pdfs:
         nom_fichier = os.path.join(dossier, os.path.basename(pdf_url))
         try:
@@ -53,7 +50,7 @@ def telecharger_pdfs(url):
             print(f"Enregistré sous {nom_fichier}")
         except requests.RequestException as e:
             print(f"Erreur lors du téléchargement de {pdf_url} : {e}")
+            return
+        return
 
-if __name__ == "__main__":
-    url = 'https://ronan.lauvergnat.fr/Enseignements_actuels_RL.html'
-    telecharger_pdfs(url)
+
