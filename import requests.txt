@@ -56,43 +56,25 @@ def pdfdownload(pdfs, dossier):
             print(f"Enregistré sous {nom_fichier}")
         except requests.RequestException as e:
             print(f"Erreur lors du téléchargement de {pdf_url} : {e}")
-allSeenPages = set([])
 
-def boucle(newFoundPages):
-    newpages = []
+
+def boucle(allpages):
     currentpages = set([])
-    for k in newFoundPages:
+    for k in allpages:
         liens = liensfinder(k)
         kpages = pagefilter(k , liens)
         for j in kpages:
-            if not allSeenPages.__contains__(j):
-                currentpages.add(j)
-
-
-
+            currentpages.add(j)
     
-    # for q in range(len(currentpages)):
-    #     alrin = 0
-    #     for p in range(len(newFoundPages)):
-    #         if currentpages[q] == newFoundPages[p]:
-    #             alrin = 1
-    #     for n in range(len(newpages)):
-    #         if currentpages[q] == newpages[n]:
-    #             alrin = 1
-    #     if alrin == 0:
-    #         print(len(currentpages))
-    #         newpages.append(currentpages[q])
     #print(q)
     #print(newpages)
-    if list(currentpages) != []:
+    if len(currentpages) != 0:
         for r in currentpages:
-            allSeenPages.add(r)
-        print(len(currentpages))
-        print("blublublu",list(currentpages))
+            allpages.append(r)
+        print("blublublu",currentpages)
         boucle(list(currentpages))
     else:
         print("blébléblé")
-        print("\n".join(list((allSeenPages))))
     #     return
     #print(kpages)
     return
@@ -101,7 +83,7 @@ def boucle(newFoundPages):
 
 
 def telecharger_pdfs(url):
-    
+    apages = []
     dossier = r'C:\Users\noahrozier\Documents\page_grp'
     if not os.path.exists(dossier):
         os.makedirs(dossier)
@@ -112,8 +94,7 @@ def telecharger_pdfs(url):
     
     apages = pagefilter(url, liens)
     pdfs = pdffilter(url, liens)
-    allSeenPages.add(url)
-    boucle([url])
+    boucle(apages)
 
 
     if pdfs:
